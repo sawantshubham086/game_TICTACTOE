@@ -1,0 +1,150 @@
+
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8;
+    TextView headerText;
+
+
+    int PLAYER_O = 0;
+    int PLAYER_X = 1;
+
+    int activeplayer = PLAYER_O;
+
+    int[] filledPos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
+    boolean isGameActive = true;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        headerText = findViewById(R.id.header_text);
+        headerText.setText("O turn");
+
+        btn0 = findViewById(R.id.btn0);
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+        btn4 = findViewById(R.id.btn4);
+        btn5 = findViewById(R.id.btn5);
+        btn6 = findViewById(R.id.btn6);
+        btn7 = findViewById(R.id.btn7);
+        btn8 = findViewById(R.id.btn8);
+
+        btn0.setOnClickListener(this::onClick);
+        btn1.setOnClickListener(this::onClick);
+        btn2.setOnClickListener(this::onClick);
+        btn3.setOnClickListener(this::onClick);
+        btn4.setOnClickListener(this::onClick);
+        btn5.setOnClickListener(this::onClick);
+        btn6.setOnClickListener(this::onClick);
+        btn7.setOnClickListener(this::onClick);
+        btn8.setOnClickListener(this::onClick);
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        //logic for button press
+
+        boolean isGameActive = false;
+        if(!isGameActive)
+            return;
+
+
+        Button clickbtn = findViewById(v.getId());
+        int clickedTag = Integer.parseInt(v.getTag().toString());
+
+        if (filledPos[clickedTag] != -1) {
+            return;
+        }
+
+        filledPos [clickedTag] = activeplayer;
+
+
+        if (activeplayer == PLAYER_O) {
+            clickbtn.setText("O");
+            activeplayer = PLAYER_X;
+            headerText.setText("X turn");
+        } else {
+            clickbtn.setText("X");
+            activeplayer = PLAYER_O;
+            headerText.setText("O turn");
+
+        }
+
+        checkForWin();
+    }
+
+    private void checkForWin() {
+
+        int[][] winningPos = { {0, 1, 2},{3, 4, 5},{6, 7, 8},{0, 3, 6},{1, 4, 7},{2, 5, 8},{0, 4, 8},{2, 4, 6} };
+
+        for (int i = 0; i < 8; i++) {
+            int valo = winningPos[i][0];
+            int val1 = winningPos[i][1];
+            int val2 = winningPos[i][2];
+
+            if (filledPos[valo] == filledPos[val1] && filledPos[val1] == filledPos[val2]) {
+                if (filledPos[valo] != -1) {
+
+
+                    boolean isGameActive = false;
+
+
+                    if (filledPos[valo] == PLAYER_O)
+                        showDialog( "O is winner");
+                    else
+                        showDialog( "X is winner");
+
+                }
+            }
+
+
+        }
+    }
+
+    private void showDialog(String winnerText) {
+        new AlertDialog.Builder(this)
+                .setTitle(winnerText)
+                .setPositiveButton("Restart game", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        restartGame();
+
+                    }
+                })
+                .show();
+
+    }
+
+    private void restartGame(){
+        activeplayer = PLAYER_O;
+        headerText.setText("O turn");
+        filledPos = new int[]{-1,-1,-1,-1,-1,-1,-1,-1,-1};
+        btn0.setText("");
+        btn1.setText("");
+        btn2.setText("");
+        btn3.setText("");
+        btn4.setText("");
+        btn5.setText("");
+        btn6.setText("");
+        btn7.setText("");
+        btn8.setText("");
+        boolean isGameActive = true;
+
+    }
+
+}
